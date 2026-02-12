@@ -14,9 +14,6 @@ A full-stack fitness application that serves exercise data via a RESTful API and
 * **Frontend:** HTML5, CSS3, Vanilla JavaScript (Fetch API)
 * **Tools:** Maven, IntelliJ IDEA, Postman
 
-## Screenshots
-*(You can upload your screenshots here later by dragging and dropping them into this editor)*
-
 ## How to Run
 1.  Clone the repository: `git clone https://github.com/das622/Fitness-Data-App.git`
 2.  Configure `application.properties` with your PostgreSQL credentials.
