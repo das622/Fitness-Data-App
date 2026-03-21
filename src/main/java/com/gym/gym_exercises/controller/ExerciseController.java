@@ -10,7 +10,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "https://gym-frontend-one-gamma.vercel.app")
 @RestController
-@RequestMapping(path="api/v1/exercises")
+@RequestMapping("/api/v1")
 public class ExerciseController {
     private final ExerciseService exerciseService;
 
@@ -19,28 +19,28 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
-    @GetMapping
+    @GetMapping("/exercises")
     public List<Exercise> getExercise(){
         return exerciseService.getExercise();
     }
 
-    @GetMapping("/name/{name}")
+    @GetMapping("/exercises/name/{name}")
     public ResponseEntity<List<Exercise>> getExerciseByName(@PathVariable String name){
         return ResponseEntity.ok(exerciseService.getExercisesByName(name));
     }
 
-    @PostMapping
+    @PostMapping("/exercises")
     public ResponseEntity<Exercise> addExercise(@RequestBody Exercise exercise) {
         Exercise createdExercise = exerciseService.addExercise(exercise);
         return new ResponseEntity<>(createdExercise, HttpStatus.CREATED);
     }
 
-    @GetMapping("/muscles/{primaryMuscles}")
+    @GetMapping("/exercises/muscles/{primaryMuscles}")
     public ResponseEntity<List<Exercise>> getExerciseByMuscle(@PathVariable String primaryMuscles){
         return ResponseEntity.ok(exerciseService.getExercisesByMuscle(primaryMuscles));
     }
 
-    @GetMapping("/equipment/{equipment}")
+    @GetMapping("/exercises/equipment/{equipment}")
     public ResponseEntity<List<Exercise>> getExerciseByEquipment(@PathVariable String equipment){
         return ResponseEntity.ok(exerciseService.getExercisesByEquipment(equipment));
     }
