@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="workouts")
@@ -13,14 +15,20 @@ public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @CreationTimestamp
-    @JsonFormat(pattern = "MM/dd/yyyy") // ADD THIS LINE!
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDateTime date;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore // Prevents infinite loops when sending JSON!
+    @JsonIgnore
     private User user;
+
+    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkoutSet> sets = new ArrayList<>();
 
     public Workout() {}
 
@@ -59,5 +67,13 @@ public class Workout {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<WorkoutSet> getSets() {
+        return sets;
+    }
+
+    public void setSets(List<WorkoutSet> sets) {
+        this.sets = sets;
     }
 }

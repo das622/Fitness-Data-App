@@ -53,4 +53,14 @@ public class WorkoutService {
         // 5. Save and return
         return workoutRepository.save(existingWorkout);
     }
+    // DELETE WORKOUT
+    public void deleteWorkout(Long workoutId) {
+        // Check if the workout exists before trying to delete it
+        if (!workoutRepository.existsById(workoutId)) {
+            throw new RuntimeException("Workout not found!");
+        }
+
+        // This single line will delete the workout AND all of its sets automatically
+        workoutRepository.deleteById(workoutId);
+    }
 }

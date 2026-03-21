@@ -42,4 +42,13 @@ public class WorkoutController {
         return ResponseEntity.ok(updatedWorkout);
     }
 
+    // DELETE WORKOUT (Cascades to sets automatically)
+    @DeleteMapping("/workouts/{workoutId}")
+    public ResponseEntity<Void> deleteWorkout(@PathVariable Long workoutId) {
+        workoutService.deleteWorkout(workoutId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
 }

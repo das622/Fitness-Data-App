@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface ExerciseRepository extends JpaRepository<Exercise, String> {
 
     void deleteByName(String name);
+    Optional<Exercise> findByNameIgnoreCase(String name);
 
     Optional<Exercise> findByName(String name);
 

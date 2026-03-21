@@ -10,4 +10,6 @@ import java.util.List;
 public interface WorkoutSetRepository extends JpaRepository<WorkoutSet, Long> {
     // Handy custom method for later!
     List<WorkoutSet> findAllByWorkoutId(Long workoutId);
+
+    List<WorkoutSet> findAllByExerciseId(String exerciseId);
 }
