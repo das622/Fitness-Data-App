@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = {"https://gym-frontend-one-gamma.vercel.app", "http://localhost:5174"})
+//@CrossOrigin(origins = {"https://gym-frontend-one-gamma.vercel.app", "http://localhost:5174"})
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1")
 public class WorkoutController {

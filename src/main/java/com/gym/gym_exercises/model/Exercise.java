@@ -16,6 +16,13 @@ public class Exercise {
     @Column(name="id", unique=true)
     private String id;
 
+    // If this is null, it's a global exercise. If it has an ID, it belongs to that user.
+    @Column(name = "user_id")
+    private Long userId;
+
+    // Optional but helpful: easily filter out custom vs global
+    @Column(name = "is_custom")
+    private Boolean isCustom;
     private String name;
 
     private String mechanic;
@@ -42,6 +49,21 @@ public class Exercise {
 
     public Exercise(String id) {
         this.id = id;
+    }
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Boolean isCustom() {
+        return isCustom;
+    }
+
+    public void setCustom(Boolean custom) {
+        isCustom = custom;
     }
 
     public String getId() {

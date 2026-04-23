@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@CrossOrigin(origins = {"https://gym-frontend-one-gamma.vercel.app", "http://localhost:5174"})
+//@CrossOrigin(origins = {"https://gym-frontend-one-gamma.vercel.app", "http://localhost:5174"})
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
@@ -24,26 +25,19 @@ public class UserController {
     }
 
     // Add to UserController.java
-    @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        Optional<User> userOpt = userRepository.findByEmail(loginRequest.getEmail());
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
-        User user = userOpt.get();
-        // NOTE: passwords should be hashed with BCrypt in production!
-        if (!user.getPassword().equals(loginRequest.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
-        return ResponseEntity.ok(user);
-    }
-
-    // CREATE USER
-    @PostMapping("/users")
-    public ResponseEntity<User> addUser(@RequestBody User user){
-        User userCreated = userService.createUser(user);
-        return new ResponseEntity<>(userCreated, HttpStatus.CREATED);
-    }
+//    @PostMapping("/auth/login")
+//    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+//        Optional<User> userOpt = userRepository.findByEmail(loginRequest.getEmail());
+//        if (userOpt.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+//        }
+//        User user = userOpt.get();
+//        // NOTE: passwords should be hashed with BCrypt in production!
+//        if (!user.getPassword().equals(loginRequest.getPassword())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+//        }
+//        return ResponseEntity.ok(user);
+//    }
 
     // READ USER
     @GetMapping("/users/{userId}")

@@ -13,6 +13,9 @@ public interface ExerciseRepository extends JpaRepository<Exercise, String> {
     void deleteByName(String name);
     Optional<Exercise> findByNameIgnoreCase(String name);
 
+    // Spring Boot magic: "Find all exercises where user_id is NULL OR user_id matches the logged-in user"
+    List<Exercise> findByUserIdIsNullOrUserId(Long userId);
+
     Optional<Exercise> findByName(String name);
 
     List<Exercise> findByCategory(String category);

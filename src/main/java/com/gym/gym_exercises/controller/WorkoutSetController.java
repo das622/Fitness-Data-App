@@ -11,7 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = {"https://gym-frontend-one-gamma.vercel.app", "http://localhost:5174"})
+//@CrossOrigin(origins = {"https://gym-frontend-one-gamma.vercel.app", "http://localhost:5174"})
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1") // Adjust this if your base URL is different
 public class WorkoutSetController {

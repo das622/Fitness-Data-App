@@ -18,13 +18,18 @@ public class ExerciseService {
         return exerciseRepository.findAll();
     }
 
+    public List<Exercise> getExercisesForUser(Long userId) {
+        return exerciseRepository.findByUserIdIsNullOrUserId(userId);
+    }
+
     public List<Exercise> getExercisesByMuscle(String muscle) {
         return exerciseRepository.findByPrimaryMusclesContainingIgnoreCase(muscle);
     }
 
-    public List<Exercise> getExercisesByName(String searchName) {
-        return exerciseRepository.findByNameContainingIgnoreCase(searchName);
+    public List<Exercise> getExercisesByName(String name) {
+        return exerciseRepository.findByNameContainingIgnoreCase(name);
     }
+
 
     public List<Exercise> getExercisesByEquipment(String equipment) {
         return exerciseRepository.findByEquipmentContainingIgnoreCase(equipment);

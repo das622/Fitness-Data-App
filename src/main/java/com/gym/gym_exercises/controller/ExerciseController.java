@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = {"https://gym-frontend-one-gamma.vercel.app", "http://localhost:5174"})
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1")
 public class ExerciseController {
@@ -20,8 +20,8 @@ public class ExerciseController {
     }
 
     @GetMapping("/exercises")
-    public List<Exercise> getExercise(){
-        return exerciseService.getExercise();
+    public List<Exercise> getExercisesForUser(@RequestParam Long userId) {
+        return exerciseService.getExercisesForUser(userId);
     }
 
     @GetMapping("/exercises/name/{name}")
@@ -30,7 +30,12 @@ public class ExerciseController {
     }
 
     @PostMapping("/exercises")
-    public ResponseEntity<Exercise> addExercise(@RequestBody Exercise exercise) {
+    public ResponseEntity<Exercise> addExercise(@RequestBody Exercise exercise, @RequestParam Long userId) {
+
+        // Stamp it with the owner's ID and mark it as custom
+        exercise.setUserId(userId);
+        exercise.setCustom(true);
+
         Exercise createdExercise = exerciseService.addExercise(exercise);
         return new ResponseEntity<>(createdExercise, HttpStatus.CREATED);
     }
