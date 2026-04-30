@@ -50,7 +50,6 @@ public class WorkoutSetController {
         return ResponseEntity.ok(summary);
     }
 
-    // GET 1-REP MAX FOR AN EXERCISE
     // GET 1-REP MAX FOR AN EXERCISE (Professional JSON Format)
     @GetMapping("/sets/1rm/{exerciseId}")
     public ResponseEntity<Map<String, Object>> getExercise1RepMax(@PathVariable String exerciseId) {

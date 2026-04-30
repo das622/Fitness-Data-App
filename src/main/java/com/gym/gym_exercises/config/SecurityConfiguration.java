@@ -28,6 +28,8 @@ public class SecurityConfiguration {
 
                 // Setting the routing rules for the fitness app
                 .authorizeHttpRequests(auth -> auth
+                        // LET THE BROWSER'S PREFLIGHT CHECKS THROUGH!
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         // The Lobby: Anyone can access the login and registration endpoints
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()

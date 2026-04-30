@@ -47,10 +47,19 @@ public class WorkoutService {
             throw new RuntimeException("Unauthorized: You do not have permission to edit this workout.");
         }
 
-        // 4. Update the fields
+        // 4. Update the name
         existingWorkout.setName(workoutDetails.getName());
 
-        // 5. Save and return
+        // 5. UPDATE THE SETS (The missing piece!)
+        if (workoutDetails.getSets() != null) {
+            existingWorkout.getSets().clear(); // Wipe the old sets
+            workoutDetails.getSets().forEach(set -> {
+                set.setWorkout(existingWorkout); // Wire the new set to this workout
+                existingWorkout.getSets().add(set); // Save it
+            });
+        }
+
+        // 6. Save and return (The original date is perfectly preserved!)
         return workoutRepository.save(existingWorkout);
     }
     // DELETE WORKOUT
