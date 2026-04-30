@@ -9,6 +9,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+// --- NEW IMPORTS REQUIRED FOR CORS ---
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -19,35 +25,39 @@ public class SecurityConfiguration {
         this.jwtAuthFilter = jwtAuthFilter;
         this.authenticationProvider = authenticationProvider;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Have to Disable CSRF (Cross-Site Request Forgery) because we use stateless tokens
                 .csrf(csrf -> csrf.disable())
                 .cors(org.springframework.security.config.Customizer.withDefaults())
-
-                // Setting the routing rules for the fitness app
                 .authorizeHttpRequests(auth -> auth
-                        // LET THE BROWSER'S PREFLIGHT CHECKS THROUGH!
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                        // The Lobby: Anyone can access the login and registration endpoints
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/v1/exercises/**").authenticated()
-                        // The Gym: Every other endpoint (like /exercises or /workouts) requires a valid token
                         .anyRequest().authenticated()
                 )
-                // Enforce the Stateless rule (No server memory for sessions)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
-                // Tell Spring to use the database checker we just built in ApplicationConfig
                 .authenticationProvider(authenticationProvider)
-
-                // Tell the custom Bouncer to stand in front of the main door
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    // --- THIS IS THE VIP LIST THAT WAS MISSING ---
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("https://davidlifts.fit", "https://www.davidlifts.fit", "http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
