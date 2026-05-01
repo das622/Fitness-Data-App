@@ -1,6 +1,6 @@
 package com.gym.gym_exercises.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+
 
 @Entity
 @Table(name="app_users")
@@ -19,7 +20,7 @@ public class User implements UserDetails {
     private String lastName;
     @Column(unique = true)
     private String email;
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     // Add a Role so the JWT payload knows their permissions
