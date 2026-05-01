@@ -40,20 +40,36 @@ public class AuthenticationController {
 
     // 1. THE NEW REGISTRATION DOOR
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody User request) {
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-        request.setRole(Role.USER);
-        userRepository.save(request);
+    public ResponseEntity<?> register(@RequestBody User request) {
+        try {
+            System.out.println("--- ATTEMPTING REGISTRATION FOR: " + request.getEmail() + " ---");
+            System.out.println("RAW PASSWORD RECEIVED FROM FRONTEND: [" + request.getPassword() + "]");
 
-        // BYPASS: Explicitly cast the request to UserDetails to satisfy IntelliJ
-        String jwtToken = jwtService.generateToken((UserDetails) request);
+            // Check if password is null or empty before encrypting
+            if (request.getPassword() == null || request.getPassword().isEmpty()) {
+                throw new IllegalArgumentException("Password cannot be empty!");
+            }
 
-        return ResponseEntity.ok(new AuthenticationResponse(
-                jwtToken,
-                request.getId(),
-                request.getFirstName(),
-                request.getEmail()
-        ));
+            request.setPassword(passwordEncoder.encode(request.getPassword()));
+            request.setRole(Role.USER);
+            userRepository.save(request);
+
+            System.out.println("--- REGISTRATION SUCCESSFUL! ---");
+
+            // BYPASS: Explicitly cast the request to UserDetails to satisfy IntelliJ
+            String jwtToken = jwtService.generateToken((UserDetails) request);
+
+            return ResponseEntity.ok(new AuthenticationResponse(
+                    jwtToken,
+                    request.getId(),
+                    request.getFirstName(),
+                    request.getEmail()
+            ));
+        } catch (Exception e) {
+            System.out.println("!!! REGISTRATION FAILED !!!");
+            System.out.println("REASON: " + e.getMessage());
+            return ResponseEntity.status(400).body("Registration Failed: " + e.getMessage());
+        }
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
