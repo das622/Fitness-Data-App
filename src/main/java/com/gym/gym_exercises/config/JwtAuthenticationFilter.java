@@ -42,16 +42,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
 
-    // 2. THE VISUAL CHECK: Does it exist and start with "Bearer "?
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-        filterChain.doFilter(request, response); // Move along, no token here
-        return;
-    }
-    // 3. STRIP THE PREFIX: Grab the raw xx.yy.zz token
-    jwt = authHeader.substring(7);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-    // 4. THE DECODE: Ask JwtService to read the email from the payload
-    userEmail = jwtService.extractUsername(jwt);
+        jwt = authHeader.substring(7);
+
+        try {
+            userEmail = jwtService.extractUsername(jwt);
+        } catch (Exception e) {
+            // Bad/expired token — just let the request proceed unauthenticated
+            filterChain.doFilter(request, response);
+            return;
+        }
     // 5. THE VIP CHECK: If we found an email, and they aren't authenticated yet...
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
