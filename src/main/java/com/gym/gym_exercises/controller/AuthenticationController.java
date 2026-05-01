@@ -55,29 +55,57 @@ public class AuthenticationController {
                 request.getEmail()
         ));
     }
-
-    // 2. THE EXISTING LOGIN DOOR
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            System.out.println("--- ATTEMPTING LOGIN FOR: " + request.getEmail() + " ---");
 
-        // BYPASS: Fetch it as a raw UserDetails object first
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
 
-        // Hand the raw UserDetails to the printer (IntelliJ will love this)
-        String jwtToken = jwtService.generateToken(userDetails);
+            System.out.println("--- LOGIN SUCCESSFUL! GENERATING TOKEN ---");
 
-        // Now cast it to your custom User so we can grab the ID and Name
-        User user = (User) userDetails;
+            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+            String jwtToken = jwtService.generateToken(userDetails);
+            User user = (User) userDetails;
 
-        return ResponseEntity.ok(new AuthenticationResponse(
-                jwtToken,
-                user.getId(),
-                user.getFirstName(),
-                user.getEmail()
-        ));
+            return ResponseEntity.ok(new AuthenticationResponse(
+                    jwtToken,
+                    user.getId(),
+                    user.getFirstName(),
+                    user.getEmail()
+            ));
+
+        } catch (Exception e) {
+            System.out.println("!!! LOGIN FAILED !!!");
+            System.out.println("REASON: " + e.getMessage());
+            e.printStackTrace(); // This prints the exact line number of the crash
+            return ResponseEntity.status(403).body("Login Failed: " + e.getMessage());
+        }
     }
+    // 2. THE EXISTING LOGIN DOOR
+//    @PostMapping("/login")
+//    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request) {
+//        authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+//        );
+//
+//        // BYPASS: Fetch it as a raw UserDetails object first
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+//
+//        // Hand the raw UserDetails to the printer (IntelliJ will love this)
+//        String jwtToken = jwtService.generateToken(userDetails);
+//
+//        // Now cast it to your custom User so we can grab the ID and Name
+//        User user = (User) userDetails;
+//
+//        return ResponseEntity.ok(new AuthenticationResponse(
+//                jwtToken,
+//                user.getId(),
+//                user.getFirstName(),
+//                user.getEmail()
+//        ));
+//    }
 
 }
